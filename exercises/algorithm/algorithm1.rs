@@ -2,8 +2,6 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
-
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
 use std::vec::*;
@@ -56,11 +54,11 @@ impl<T> LinkedList<T> {
         self.length += 1;
     }
 
-    pub fn get(&mut self, index: i32) -> Option<&T> {
+    pub fn get(&self, index: i32) -> Option<&T> {
         self.get_ith_node(self.start, index)
     }
 
-    fn get_ith_node(&mut self, node: Option<NonNull<Node<T>>>, index: i32) -> Option<&T> {
+    fn get_ith_node(&self, node: Option<NonNull<Node<T>>>, index: i32) -> Option<&T> {
         match node {
             None => None,
             Some(next_ptr) => match index {
@@ -70,13 +68,42 @@ impl<T> LinkedList<T> {
         }
     }
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+      where T: Ord + Clone
 	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+    if list_a.start == None {
+        return list_b
+    }
+    if list_b.start == None {
+        return list_a
+    }
+    let mut result = LinkedList::new();
+    let mut i_a = 0;
+    let mut i_b = 0;
+    loop {
+        match (list_a.get(i_a).cloned(), list_b.get(i_b).cloned()) {
+            (Some(a), None) => {
+                result.add(a);
+                i_a += 1;
+            },
+            (None, Some(b)) => {
+                result.add(b);
+                i_b += 1;
+            },
+            (Some(a), Some(b)) => {
+                if a < b {
+                    result.add(a);
+                    i_a += 1;
+                } else {
+                    result.add(b);
+                    i_b += 1;
+                }
+            }
+            (None, None) => {
+                break;
+            }
         }
+    }
+    return result;
 	}
 }
 

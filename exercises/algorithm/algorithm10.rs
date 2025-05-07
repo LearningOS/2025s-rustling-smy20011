@@ -2,8 +2,6 @@
 	graph
 	This problem requires you to implement a basic graph functio
 */
-// I AM NOT DONE
-
 use std::collections::{HashMap, HashSet};
 use std::fmt;
 #[derive(Debug, Clone)]
@@ -16,6 +14,15 @@ impl fmt::Display for NodeNotInGraph {
 pub struct UndirectedGraph {
     adjacency_table: HashMap<String, Vec<(String, i32)>>,
 }
+
+impl UndirectedGraph {
+    fn add_dir_edge(&mut self, edge: (&str, &str, i32)) {
+        let (start, end, weight) = edge;
+        let entry = (end.to_string(), weight);
+        self.adjacency_table.entry(start.to_string()).or_insert(vec![]).push(entry);
+    }
+}
+
 impl Graph for UndirectedGraph {
     fn new() -> UndirectedGraph {
         UndirectedGraph {
@@ -29,19 +36,24 @@ impl Graph for UndirectedGraph {
         &self.adjacency_table
     }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
-        //TODO
+       println!("{:?}", self.adjacency_table);
+       let (start, end, weight) = edge;
+       self.add_dir_edge((start, end, weight));
+       self.add_dir_edge((end, start, weight));
     }
+
 }
 pub trait Graph {
     fn new() -> Self;
     fn adjacency_table_mutable(&mut self) -> &mut HashMap<String, Vec<(String, i32)>>;
     fn adjacency_table(&self) -> &HashMap<String, Vec<(String, i32)>>;
     fn add_node(&mut self, node: &str) -> bool {
-        //TODO
 		true
     }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
-        //TODO
+        let (start, end, weight) = edge;
+        let entry = (end.to_string(), weight);
+        self.adjacency_table_mutable().entry(start.to_string()).or_insert(vec![]).push(entry);
     }
     fn contains(&self, node: &str) -> bool {
         self.adjacency_table().get(node).is_some()
